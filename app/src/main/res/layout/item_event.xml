@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="?android:attr/selectableItemBackground">
+
+    <TextView
+        android:id="@+id/header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="1233211"
+        android:textSize="18sp"
+        android:textColor="@android:color/background_dark"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/date"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="23 may"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@android:color/background_dark"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingLeft="14dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp">
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginRight="4dp"
+            android:src="@drawable/ic_place_black_24dp"/>
+        <TextView
+            android:id="@+id/location"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="1233211"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-light"
+            android:textColor="@android:color/background_dark"
+            android:maxLines="2"
+            android:ellipsize="end"
+            />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/participants"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="0 peoples are going"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@android:color/background_dark"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"/>
+
+    <TextView
+        android:id="@+id/description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Dis gun be great!
+Fckin best party @World
+Bring your best clothes, we are gonna dance 2night!!!"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@android:color/background_dark"
+        android:maxLines="4"
+        android:ellipsize="end"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"/>
+    
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/tags"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="game fun challenge"
+        android:textSize="14sp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@android:color/background_dark"
+        android:maxLines="2"
+        android:ellipsize="end"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="8dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_marginTop="8dp"
+        android:background="@color/cardview_dark_background"/>
+
+</LinearLayout>
