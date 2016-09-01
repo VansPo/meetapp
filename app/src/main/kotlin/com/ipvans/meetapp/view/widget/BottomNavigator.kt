@@ -27,14 +27,14 @@ class BottomNavigator : LinearLayout {
         inflate(context, R.layout.navigator_layout, this)
     }
 
-    fun addButton(imageRes: Int, text: String = "", tag: Any? = null, listener: (v: View) -> Unit): BottomNavigator {
+    fun addButton(imageRes: Int, text: String = "", tag: Any? = null, shouldSelect : Boolean = true, listener: (v: View) -> Unit): BottomNavigator {
         val v = LayoutInflater.from(context).inflate(R.layout.navigator_item, container, false) as ImageView
         v.isClickable = true
         v.setImageResource(imageRes)
         v.setTag(tag)
         //todo set text if any
         v.setOnClickListener {
-            if (selectButton(v))
+            if (!shouldSelect || selectButton(v))
                 listener.invoke(v)
         }
         v.id = v.hashCode()

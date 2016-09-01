@@ -47,8 +47,6 @@ class LoginActivity : AppCompatActivity() {
                         name.text.toString(),
                         phone.text.toString())
         ) }
-
-        presenter.onAttached()
     }
 
     fun startMainActivity() {
@@ -84,6 +82,11 @@ class LoginActivity : AppCompatActivity() {
         progress.visibleIf(false)
         loginButton.text = "Sign up"
         switch.text = "Already have an account? Login"
+    }
+
+    override fun onStart() {
+        super.onStart()
+        presenter.onAttached()
     }
 
     override fun onStop() {

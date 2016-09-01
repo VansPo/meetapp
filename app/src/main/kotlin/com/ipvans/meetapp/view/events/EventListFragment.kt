@@ -14,6 +14,7 @@ import android.widget.Toast
 import com.ipvans.meetapp.App
 import com.ipvans.meetapp.R
 import com.ipvans.meetapp.data.restapi.model.AEvent
+import com.ipvans.meetapp.data.toMessage
 import com.ipvans.meetapp.view.main.ToolbarProvider
 import javax.inject.Inject
 
@@ -75,9 +76,10 @@ class EventListFragment : Fragment() {
             }
         })
 
-        presenter.onAttached()
-
         setupToolbar()
+
+        presenter.onAttached()
+        presenter.refresh()
     }
 
     fun setupToolbar() {
@@ -101,9 +103,9 @@ class EventListFragment : Fragment() {
         showProgress(false)
     }
 
-    fun showError() {
+    fun showError(t : Any?) {
         showProgress(false)
-        Toast.makeText(activity, "Error", Toast.LENGTH_SHORT).show()
+        Toast.makeText(activity, t.toMessage(), Toast.LENGTH_SHORT).show()
     }
 
     fun showEmpty(isEmpty: Boolean) = when {
@@ -116,8 +118,8 @@ class EventListFragment : Fragment() {
         if (progress.not()) showEmpty(adapter.itemCount == 0)
     }
 
-    override fun onStop() {
-        super.onStop()
+    override fun onDestroy() {
+        super.onDestroy()
         presenter.onDetached()
     }
 

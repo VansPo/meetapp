@@ -4,7 +4,7 @@ buildscript {
     ext {
         kotlin_version = '1.0.2'
         googleServices = "8.4.0"
-        support = "23.3.0"
+        support = "24.2.0"
         picasso = "2.3.4"
         dagger = "2.2"
         timber = "2.4.1"

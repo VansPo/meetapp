@@ -40,7 +40,7 @@ class ApiModule {
 
     @Provides
     @Singleton
-    internal fun provideEndpoint() = MyEndPoint("http://192.168.1.102:8080")
+    internal fun provideEndpoint() = MyEndPoint("http://192.168.0.112:8080")
 
     @Provides
     @Singleton

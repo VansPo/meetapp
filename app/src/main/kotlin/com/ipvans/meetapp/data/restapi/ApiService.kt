@@ -1,9 +1,6 @@
 package com.ipvans.meetapp.data.restapi
 
-import com.ipvans.meetapp.data.restapi.model.AEvent
-import com.ipvans.meetapp.data.restapi.model.AUserShort
-import com.ipvans.meetapp.data.restapi.model.BaseResponse
-import com.ipvans.meetapp.data.restapi.model.ListResponse
+import com.ipvans.meetapp.data.restapi.model.*
 import com.ipvans.meetapp.data.restapi.model.request.LoginRequest
 import com.ipvans.meetapp.data.restapi.model.request.SignupRequest
 import retrofit.http.Body
@@ -32,6 +29,6 @@ interface ApiService {
                       @Query("limit") limit: Int): Observable<BaseResponse<ListResponse<AEvent>>>
 
     @POST("/api/event")
-    fun createEvent(@Body event: AEvent): Observable<BaseResponse<AEvent>>
+    fun createEvent(@Body event: AEventRequest): Observable<BaseResponse<Any>>
 
 }

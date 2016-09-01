@@ -82,7 +82,7 @@ class EventListPresenter(val view: EventListFragment,
             .observeOn(AndroidSchedulers.mainThread())
             .doOnNext {
                 when (it.state) {
-                    ViewState.ERROR -> view.showError()
+                    ViewState.ERROR -> view.showError(it.data)
                     ViewState.CONTENT -> view.showProgress(false)
                     ViewState.PROGRESS -> view.showProgress(true)
                 }
@@ -106,8 +106,6 @@ class EventListPresenter(val view: EventListFragment,
     fun onAttached() {
         subscriptions += dataSubscription.connect()
         subscriptions += notificationSubscription.connect()
-
-        refresh()
     }
 
     fun onDetached() {
