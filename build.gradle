@@ -2,8 +2,8 @@
 
 buildscript {
     ext {
-        kotlin_version = '1.0.2'
-        googleServices = "8.4.0"
+        kotlin_version = '1.0.3'
+        googleServices = "9.4.0"
         support = "24.2.0"
         picasso = "2.3.4"
         dagger = "2.2"
@@ -15,7 +15,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.1.0'
+        classpath 'com.android.tools.build:gradle:2.2.0-rc1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         classpath 'com.google.gms:google-services:2.1.0-beta1'

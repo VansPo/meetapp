@@ -3,4 +3,4 @@
     android:layout_width="0dp"
     android:layout_height="24dp"
     android:layout_weight="1"
-    android:src="@drawable/places_ic_search" />
+    android:src="@drawable/ic_search_black_24dp" />
