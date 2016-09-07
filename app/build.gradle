@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "com.ipvans.meetapp"
         minSdkVersion 16
-        targetSdkVersion 23
+        targetSdkVersion 24
         versionCode 1
         versionName "1.0"
     }
@@ -61,4 +61,5 @@ dependencies {
     compile 'com.github.salomonbrys.kotson:kotson:2.2.2'
 
     testCompile 'junit:junit:4.12'
+    compile project(path: ':rmodel')
 }

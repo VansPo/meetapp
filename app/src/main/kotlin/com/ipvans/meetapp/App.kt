@@ -1,8 +1,13 @@
 package com.ipvans.meetapp
 
 import android.app.Application
+import com.ipvans.modelsandbox.core.Model
+import com.ipvans.modelsandbox.core.ModelContainer
+import java.util.*
 
-class App : Application() {
+class App : Application(), ModelContainer {
+
+    override val models = HashMap<String, Model<*>>()
 
     lateinit var component: AppComponent
 

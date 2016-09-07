@@ -9,6 +9,7 @@ import com.ipvans.meetapp.R
 import com.ipvans.meetapp.view.create.CreateActivity
 import com.ipvans.meetapp.view.events.EventListFragment
 import com.ipvans.meetapp.view.widget.BottomNavigator
+import java.io.Serializable
 
 class MainActivity : AppCompatActivity(), ToolbarProvider {
 
@@ -21,8 +22,6 @@ class MainActivity : AppCompatActivity(), ToolbarProvider {
         setContentView(R.layout.activity_main)
 
         initBottomNavigator()
-
-        showScreen(Screen.HOME)
     }
 
     fun showScreen(screen: Screen) = navigator.callButtonWithTag(screen)
@@ -59,7 +58,20 @@ class MainActivity : AppCompatActivity(), ToolbarProvider {
 
     }
 
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (savedInstanceState != null) {
+            navigator.selectButton(savedInstanceState.getSerializable("screen")).not()
+        }
+        else {
+            showScreen(Screen.HOME)
+        }
+    }
 
+    override fun onSaveInstanceState(outState: Bundle?) {
+        super.onSaveInstanceState(outState)
+        outState?.putSerializable("screen", navigator.selectedView?.tag as Serializable)
+    }
 
     override fun provideToolbar() = toolbar
 }

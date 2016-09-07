@@ -1,5 +1,6 @@
 package com.ipvans.meetapp.view.events
 
+import android.os.Parcelable
 import com.ipvans.meetapp.data.interactors.EventsInteractor
 import com.ipvans.meetapp.data.plusAssign
 import com.ipvans.meetapp.data.restapi.model.AEvent
@@ -7,30 +8,39 @@ import com.ipvans.meetapp.data.restapi.model.BaseResponse
 import com.ipvans.meetapp.data.restapi.model.ListResponse
 import com.ipvans.meetapp.view.ViewNotification
 import com.ipvans.meetapp.view.ViewState
+import com.ipvans.modelsandbox.core.Model
 import rx.Observable
 import rx.android.schedulers.AndroidSchedulers
 import rx.schedulers.Schedulers
 import rx.subjects.BehaviorSubject
 import rx.subjects.PublishSubject
 import rx.subscriptions.CompositeSubscription
+import java.util.*
 import java.util.concurrent.TimeUnit
 
-class EventListPresenter(val view: EventListFragment,
-                         val eventsInteractor: EventsInteractor,
-                         val mode: String) {
+class EventListModel(val eventsInteractor: EventsInteractor,
+                     val mode: String) : Model<EventListFragment>() {
+
+    data class RecyclerViewState(val dataCache: ArrayList<AEvent> = arrayListOf(), var scrollState: Parcelable? = null)
 
     private val subscriptions = CompositeSubscription()
 
-    private val refreshSubject = PublishSubject.create<Any>();
-    private val paginationSubject = PublishSubject.create<Int>();
-    private val sortSubject = BehaviorSubject.create<String>("gg");
-    private val notificationSubject = BehaviorSubject.create<ViewNotification<*>>(ViewNotification(0, ViewState.CONTENT));
+    private val refreshSubject = PublishSubject.create<Any>()
+    private val paginationSubject = PublishSubject.create<Int>()
+    private val sortSubject = BehaviorSubject.create<String>("")
+    private val notificationSubject = BehaviorSubject.create<ViewNotification<*>>(ViewNotification(0, ViewState.CONTENT))
 
-    private val DEFAULT_PAGE = 1;
-    private var page = DEFAULT_PAGE;
-    private var totalPages = DEFAULT_PAGE;
+    val dataSubject = PublishSubject.create<List<AEvent>>()
+    val clearSubject = PublishSubject.create<Any>()
+
+    private val DEFAULT_PAGE = 1
+    private var page = DEFAULT_PAGE
+    private var prevPage = DEFAULT_PAGE
+    private var totalPages = DEFAULT_PAGE
     private var limit = 10
 
+//    private val dataCache = arrayListOf<AEvent>()
+    private val recyclerState = RecyclerViewState()
 
     val dataSubscription = Observable.combineLatest(
             paginationSubject
@@ -59,6 +69,7 @@ class EventListPresenter(val view: EventListFragment,
                     EventListFragment.MODE_EXPLORE -> eventsInteractor.getAllEvents(page, limit)
                     else -> eventsInteractor.getUserEvents(page, limit)
                 }.onErrorReturn {
+                    page = prevPage
                     notificationSubject.onNext(ViewNotification(it, ViewState.ERROR))
                     BaseResponse<ListResponse<AEvent>>()
                 }
@@ -67,27 +78,20 @@ class EventListPresenter(val view: EventListFragment,
             .doOnNext {
                 it.data?.let {
                     totalPages = it.pages
-                    it.page?.let {
-                        if (it.toInt() == DEFAULT_PAGE) view.clearData()
-                    }
-                    view.showContent(it.docs)
+                    dataSubject.onNext(it.docs)
                     notificationSubject.onNext(ViewNotification(it.docs, ViewState.CONTENT))
+
                     page++
+                    prevPage = page
                 }
             }
             .publish()
 
-    val notificationSubscription = notificationSubject.subscribeOn(Schedulers.io())
+
+    val notifications = notificationSubject.subscribeOn(Schedulers.io())
             .debounce(200, TimeUnit.MILLISECONDS)
             .observeOn(AndroidSchedulers.mainThread())
-            .doOnNext {
-                when (it.state) {
-                    ViewState.ERROR -> view.showError(it.data)
-                    ViewState.CONTENT -> view.showProgress(false)
-                    ViewState.PROGRESS -> view.showProgress(true)
-                }
-            }
-            .publish()
+            .asObservable()
 
     fun refresh() {
         resetPages()
@@ -100,16 +104,35 @@ class EventListPresenter(val view: EventListFragment,
     }
 
     private fun resetPages() {
-        page = DEFAULT_PAGE;
+        page = DEFAULT_PAGE
     }
 
-    fun onAttached() {
+    override fun onActivityCreated() {
+        refresh()
+
         subscriptions += dataSubscription.connect()
-        subscriptions += notificationSubscription.connect()
     }
 
-    fun onDetached() {
+    override fun onActivityDestroyed() {
+        super.onActivityDestroyed()
         subscriptions.clear()
     }
+
+    override fun attachPresenter(presenter: EventListFragment) {
+        presenter.showContent(recyclerState.dataCache)
+        presenter.restoreScrollState(recyclerState.scrollState)
+        recyclerState.dataCache.clear()
+    }
+
+    fun saveAdapterData(data: List<AEvent>, scrollState: Parcelable) {
+        recyclerState.dataCache.addAll(data)
+        recyclerState.scrollState = scrollState
+    }
+
+    override fun detachPresenter() {
+
+    }
+
+    fun isFirstPage() = page == DEFAULT_PAGE
 
 }
