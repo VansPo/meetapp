@@ -20,8 +20,12 @@ class MainActivity : AppCompatActivity(), ToolbarProvider {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
         initBottomNavigator()
+
+        savedInstanceState?.let {
+            if (navigator.selectButton(it.getSerializable("screen")).not())
+                showScreen(Screen.HOME)
+        } ?: showScreen(Screen.HOME)
     }
 
     fun showScreen(screen: Screen) = navigator.callButtonWithTag(screen)
@@ -56,16 +60,6 @@ class MainActivity : AppCompatActivity(), ToolbarProvider {
 
     private fun showAccountScreen() {
 
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        super.onRestoreInstanceState(savedInstanceState)
-        if (savedInstanceState != null) {
-            navigator.selectButton(savedInstanceState.getSerializable("screen")).not()
-        }
-        else {
-            showScreen(Screen.HOME)
-        }
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
