@@ -46,6 +46,8 @@ class CreatePresenter(val view: CreateActivity, val eventInteractor: EventsInter
         subscriptions += createSubject.connect()
     }
 
-    fun onDetached() = subscriptions.clear()
+    fun onDetached() {
+        subscriptions.clear()
+    }
 
 }

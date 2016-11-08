@@ -8,11 +8,15 @@ import android.support.design.widget.TextInputLayout
 import android.support.v7.widget.Toolbar
 import android.view.View
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import com.bumptech.glide.Glide
+import com.google.android.gms.location.places.Place
 import com.google.android.gms.location.places.ui.PlacePicker
 import com.ipvans.meetapp.App
 import com.ipvans.meetapp.R
+import com.ipvans.meetapp.data.getMapSnapshotURL
 import com.ipvans.meetapp.data.restapi.model.*
 import com.ipvans.meetapp.data.toMessage
 import com.ipvans.meetapp.data.withBackButton
@@ -31,6 +35,7 @@ class CreateActivity : RxActivity() {
     private val toolbar by lazy { findViewById(R.id.toolbar) as Toolbar }
     private val title by lazy { findViewById(R.id.title) as TextInputLayout }
     private val location by lazy { findViewById(R.id.location) as TextView }
+    private val locationImage by lazy { findViewById(R.id.location_image) as ImageView }
     private val dateTime by lazy { findViewById(R.id.date) as TextView }
     private val description by lazy { findViewById(R.id.description) as TextInputLayout }
     private val create by lazy { findViewById(R.id.create) as Button }
@@ -38,6 +43,7 @@ class CreateActivity : RxActivity() {
 
     @Inject
     lateinit var presenter: CreatePresenter
+    private var place: Place? = null
 
     private val locationPickerIntent by lazy { PlacePicker.IntentBuilder().build(this) }
 
@@ -51,7 +57,7 @@ class CreateActivity : RxActivity() {
 
         toolbar.withBackButton(this).title = "Create"
 
-        location.setOnClickListener { startActivityForResult(locationPickerIntent, PLACE_PICKER_REQUEST) }
+        locationImage.setOnClickListener { startActivityForResult(locationPickerIntent, PLACE_PICKER_REQUEST) }
 
         create.setOnClickListener { presenter.createClick() }
 
@@ -78,25 +84,23 @@ class CreateActivity : RxActivity() {
             tags = emptyList(),
             invites = emptyList(),
             attendees = emptyList(),
-            place = presenter.place
+            place = place?.let {AEventPlace(
+                    true,
+                    listOf(AVariant(
+                            place!!.latLng.latitude,
+                            place!!.latLng.longitude,
+                            place!!.name?.toString(),
+                            AVariantAdditional(
+                                    place!!.address?.toString(),
+                                    place!!.websiteUri?.toString()
+                            )
+                    )))} ?: null
     )
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == PLACE_PICKER_REQUEST && resultCode == Activity.RESULT_OK) {
-            val place = PlacePicker.getPlace(this, data)
-            presenter.place = AEventPlace(
-                    true,
-                    listOf(AVariant(
-                            place.latLng.latitude,
-                            place.latLng.longitude,
-                            place.name?.toString(),
-                            AVariantAdditional(
-                                    place.address?.toString(),
-                                    place.websiteUri?.toString()
-                            )
-                    ))
-            )
-            location.text = listOf(place.name, place.address).joinToString("\n")
+            place = PlacePicker.getPlace(this, data)
+            setPlace(place)
         }
     }
 
@@ -110,6 +114,13 @@ class CreateActivity : RxActivity() {
         if (error is Throwable) Timber.e(error, "Error while creating")
         Toast.makeText(this, error.toMessage(), Toast.LENGTH_LONG).show()
 
+    }
+
+    private fun setPlace(place: Place?) {
+        place?.let {
+            Glide.with(this).load(place.getMapSnapshotURL()).into(locationImage)
+            location.text = listOf(place.name, place.address).joinToString("\n")
+        }
     }
 
     override fun onStart() {

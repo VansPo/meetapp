@@ -44,7 +44,7 @@ class EventListFragment : Fragment() {
     private val swipe: SwipeRefreshLayout by lazy { activity.findViewById(R.id.swipe) as SwipeRefreshLayout }
     private val empty by lazy { activity.findViewById(R.id.empty) as TextView }
 
-    private var adapter = EventsAdapter()
+    lateinit private var adapter: EventsAdapter
     lateinit var mode: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -63,6 +63,7 @@ class EventListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        adapter = EventsAdapter(activity)
         recycler.adapter = adapter
         recycler.itemAnimator = DefaultItemAnimator()
         recycler.layoutManager = LinearLayoutManager(activity)
